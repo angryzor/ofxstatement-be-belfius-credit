@@ -36,7 +36,7 @@ class BelfiusBeCreditParser(StatementParser):
     def parse_datetime(self, value):
         [day, month] = map(int, value.split('/'))
 
-        return datetime.date(self.statement.start_date.year + (1 if self.next_year_line else 0), month, day)
+        return datetime.date(self.statement.end_date.year if month <= 6 else self.statement.start_date.year, month, day)
 
     def split_records(self):
         """Return iterable object consisting of a line per transaction
@@ -63,9 +63,9 @@ class BelfiusBeCreditParser(StatementParser):
         # print(line_match[3])
         # raise 'matched'
 
-        [proc_day, proc_month] = map(int, line_match[2].split('/'))
-        proc_date = datetime.date(self.statement.start_date.year, proc_month, proc_day)
-        self.next_year_line = proc_date < self.statement.start_date
+        # [proc_day, proc_month] = map(int, line_match[2].split('/'))
+        # proc_date = datetime.date(self.statement.start_date.year, proc_month, proc_day)
+        # self.next_year_line = proc_date < self.statement.start_date
 
         self.statement.currency = 'EUR'#line_match[4]
         stmt_ln.date = self.parse_value(line_match[1], 'date')
